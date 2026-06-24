@@ -9,5 +9,6 @@ public interface IServiceOrderRepository
     Task<IReadOnlyList<ServiceOrder>> GetByStatusAsync(OrderStatus status, CancellationToken cancellationToken = default);
     Task AddAsync(ServiceOrder order, CancellationToken cancellationToken = default);
     Task UpdateAsync(ServiceOrder order, CancellationToken cancellationToken = default);
+    Task<bool> ExistsAsync(string customerName, string equipmentName, CancellationToken cancellationToken = default);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -15,6 +15,15 @@ public class CreateServiceOrderHandler : IRequestHandler<CreateServiceOrderComma
 
     public async Task<Guid> Handle(CreateServiceOrderCommand request, CancellationToken cancellationToken)
     {
+        var alreadyExists = await _repository.ExistsAsync(
+            request.CustomerName,
+            request.EquipmentName,
+            cancellationToken);
+
+        if (alreadyExists)
+            throw new InvalidOperationException(
+                $"An order for customer '{request.CustomerName}' with equipment '{request.EquipmentName}' already exists.");
+
         var order = ServiceOrder.Create(
             request.CustomerName,
             request.EquipmentName,

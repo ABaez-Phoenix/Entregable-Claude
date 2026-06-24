@@ -45,19 +45,8 @@ public class ServiceOrdersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Assign(Guid id, [FromBody] AssignTechnicianRequest request)
     {
-        try
-        {
-            await _mediator.Send(new AssignTechnicianCommand(id, request.TechnicianName));
-            return NoContent();
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(new { error = ex.Message });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
+        await _mediator.Send(new AssignTechnicianCommand(id, request.TechnicianName));
+        return NoContent();
     }
 
     /// <summary>Returns all service orders filtered by status.</summary>

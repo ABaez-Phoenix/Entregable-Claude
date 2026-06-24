@@ -18,6 +18,7 @@ public class CreateServiceOrderHandlerTests
     [Fact]
     public async Task Handle_WithValidCommand_ReturnsNewOrderId()
     {
+        _repository.ExistsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns(false);
         _repository.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(1);
 
         var command = new CreateServiceOrderCommand("Alice Smith", "MacBook Pro", "Battery drains fast");
@@ -27,5 +28,18 @@ public class CreateServiceOrderHandlerTests
         Assert.NotEqual(Guid.Empty, result);
         await _repository.Received(1).AddAsync(Arg.Any<ServiceOrder>(), Arg.Any<CancellationToken>());
         await _repository.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task Handle_WhenDuplicateOrderExists_ThrowsInvalidOperationException()
+    {
+        _repository.ExistsAsync("Alice Smith", "MacBook Pro", Arg.Any<CancellationToken>()).Returns(true);
+
+        var command = new CreateServiceOrderCommand("Alice Smith", "MacBook Pro", "Same problem again");
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _handler.Handle(command, CancellationToken.None));
+
+        await _repository.DidNotReceive().AddAsync(Arg.Any<ServiceOrder>(), Arg.Any<CancellationToken>());
     }
 }

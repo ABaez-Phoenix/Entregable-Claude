@@ -24,6 +24,11 @@ public class ServiceOrderRepository : IServiceOrderRepository
             .OrderByDescending(o => o.CreatedAt)
             .ToListAsync(cancellationToken);
 
+    public async Task<bool> ExistsAsync(string customerName, string equipmentName, CancellationToken cancellationToken = default)
+        => await _context.ServiceOrders.AnyAsync(
+            o => o.CustomerName == customerName && o.EquipmentName == equipmentName,
+            cancellationToken);
+
     public async Task AddAsync(ServiceOrder order, CancellationToken cancellationToken = default)
         => await _context.ServiceOrders.AddAsync(order, cancellationToken);
 
