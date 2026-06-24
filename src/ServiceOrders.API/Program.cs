@@ -1,6 +1,7 @@
 using ServiceOrders.Application;
 using ServiceOrders.Infrastructure;
 using ServiceOrders.Infrastructure.Persistence;
+using ServiceOrders.API.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

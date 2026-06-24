@@ -112,13 +112,11 @@ Passed! - Failed: 0, Passed: 13, Skipped: 0, Total: 13
 
 ## Tema 6: GitHub MCP Integration
 
-**Descripción:** Se utilizó la integración de GitHub MCP para:
+**Descripción:** Se utilizó la integración de GitHub CLI (gh) para ejecutar acciones reales sobre el repositorio desde Claude Code:
 
-- ✅ Creación del repositorio `Entregable-Claude` desde Claude Code
-- ✅ Commit inicial del código fuente vía GitHub MCP
-- ✅ Creación de issue para documentar la vulnerabilidad de SQLite encontrada en el Security Review
-
-> 📸 _Ver `/evidence/github-mcp-actions.png` para capturas de las acciones realizadas_
+- ✅ Push del commit inicial al repositorio `ABaez-Phoenix/Entregable-Claude`
+- ✅ Autenticación con `gh auth login` (cuenta: ABaez-Phoenix)
+- ✅ Creación del issue [#1 — Security: Actualizar SQLitePCLRaw.lib.e_sqlite3 - vulnerabilidad GHSA-2m69-gcr7-jv3q](https://github.com/ABaez-Phoenix/Entregable-Claude/issues/1) directamente desde Claude Code, documentando el hallazgo del Security Review
 
 ---
 
