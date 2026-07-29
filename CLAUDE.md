@@ -23,6 +23,12 @@ tests/
 .claude/
   skills/                      # Custom skills de Claude Code
   hooks/                       # Custom hooks de Claude Code
+  commands/opsx/               # Slash commands de OpenSpec (propose, apply, archive, etc.)
+openspec/
+  config.yaml                  # Contexto del proyecto para OpenSpec
+  specs/                       # Specs vivas (fuente de verdad del comportamiento actual)
+  changes/                     # Propuestas de cambio en curso
+  changes/archive/             # Cambios ya implementados y archivados
 ```
 
 ## Convenciones de código
@@ -41,6 +47,14 @@ tests/
 
 ## Estados válidos de una orden
 `Pending` → `InProgress` (al asignar técnico) → `Closed` (futuro)
+
+## Flujo de trabajo: OpenSpec (spec-driven development)
+Todo cambio de comportamiento (endpoint nuevo, transición de estado nueva, regla de negocio nueva) arranca con una propuesta antes de tocar código:
+1. `/opsx:propose <nombre-del-cambio>` — genera `proposal.md`, `specs/` (delta) y `tasks.md` en `openspec/changes/<nombre>/` para revisar y ajustar antes de implementar.
+2. `/opsx:apply` — implementa las tareas del checklist, marcándolas como completadas.
+3. `/opsx:archive` — sincroniza la spec delta contra `openspec/specs/` (la spec viva) y archiva el cambio en `openspec/changes/archive/`.
+
+`openspec/specs/service-order-lifecycle/spec.md` es la spec base (retrofit del comportamiento ya implementado). Cualquier cambio a ese comportamiento (ej. agregar el estado `Closed`) debe generar un delta contra esa spec, no reemplazarla directamente.
 
 ## Comandos frecuentes
 ```bash
@@ -65,3 +79,4 @@ dotnet run --project src/ServiceOrders.API
 - **No** inyectar `AppDbContext` directamente en la capa Application — usar solo `IServiceOrderRepository`
 - **No** agregar lógica de negocio en los Controllers
 - La base de datos SQLite (`serviceorders.db`) se crea automáticamente al iniciar la API
+- **No** implementar cambios de comportamiento directamente — pasan primero por `/opsx:propose` (ver sección "Flujo de trabajo: OpenSpec")
