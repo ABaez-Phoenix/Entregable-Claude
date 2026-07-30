@@ -1,0 +1,58 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+context: |
+  Service Orders API — REST API para gestión de órdenes de servicio técnico
+  (Phoenix Calibration DR).
+
+  Stack: .NET 10, Clean Architecture + CQRS con MediatR, EF Core 10 con SQLite,
+  xUnit + NSubstitute para tests, Swagger/Swashbuckle para documentación.
+
+  Estructura por capas:
+    - ServiceOrders.Domain: entidades, enums e interfaces, sin dependencias externas.
+    - ServiceOrders.Application: handlers CQRS, DTOs, DI registration.
+    - ServiceOrders.Infrastructure: EF Core, repositorios, migraciones.
+    - ServiceOrders.API: controllers, Program.cs, appsettings.
+
+  Convenciones:
+    - Clases de dominio con private setters — mutación solo vía métodos de negocio.
+    - Handlers siempre retornan Task/Task<T>, nunca bloquear con .Result.
+    - Registrar dependencias exclusivamente en DependencyInjection.cs por capa.
+    - No usar var cuando el tipo no es evidente en la misma línea.
+    - Nombres en inglés, comentarios XML en español para clases de dominio.
+
+  Restricciones duras:
+    - No modificar entidades del dominio desde fuera de la capa Domain.
+    - No inyectar AppDbContext directamente en Application — usar solo IServiceOrderRepository.
+    - No agregar lógica de negocio en los Controllers.
+
+  Estados válidos de una orden: Pending -> InProgress (al asignar técnico) -> Closed (futuro).
+
+  Endpoints implementados:
+    - POST /api/serviceorders (Command: crear orden)
+    - PATCH /api/serviceorders/{id}/assign (Command: asignar técnico)
+    - GET /api/serviceorders?status={status} (Query: consultar por estado)
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
